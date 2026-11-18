@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: loantrack-config
+  namespace: loantrack
+  labels:
+    app.kubernetes.io/name: loantrack-config
+    app.kubernetes.io/part-of: loantrack-system
+data:
+  DB_HOST: "postgres-service.loantrack.svc.cluster.local"
+  DB_PORT: "5432"
+  DB_NAME: "loantrack"
+  PORT: "8000"
