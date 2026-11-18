@@ -138,7 +138,7 @@ kubectl port-forward svc/backend-service 8000:8000 -n loantrack
 ---
 
 ## 5. Repository Documentation Index
-- [BRANCHING.md](file:///c:/Users/mdsul/Desktop/loantrack-devops-assignment/BRANCHING.md): Git branching model followed and assessment for a 5-person daily shipping team.
-- [EVIDENCE.md](file:///c:/Users/mdsul/Desktop/loantrack-devops-assignment/EVIDENCE.md): Live operational verification logs for Parts B, C, and D.
-- [ISSUES_FACED.md](file:///c:/Users/mdsul/Desktop/loantrack-devops-assignment/ISSUES_FACED.md): Three genuine technical challenges (Symptom → Diagnosis → Root cause → Fix).
-- [AI_USAGE.md](file:///c:/Users/mdsul/Desktop/loantrack-devops-assignment/AI_USAGE.md): Full audit log of AI tooling, adjustments, and critique.
+- **[BRANCHING.md](./BRANCHING.md)** — Git branching model followed and evaluation for a 5-person daily shipping team.
+- **[EVIDENCE.md](./EVIDENCE.md)** — Live operational verification logs and terminal outputs for Parts B, C, and D.
+- **[ISSUES_FACED.md](./ISSUES_FACED.md)** — Three genuine technical post-mortems (Symptom → Diagnosis → Root cause → Fix).
+- **[AI_USAGE.md](./AI_USAGE.md)** — Full audit log of AI tooling, manual engineering adjustments, and critique.
