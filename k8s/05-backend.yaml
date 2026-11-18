@@ -1,6 +1,24 @@
 apiVersion: v1
 kind: Service
 metadata:
+  name: backend
+  namespace: loantrack
+  labels:
+    app.kubernetes.io/name: backend
+    app.kubernetes.io/component: api
+    app.kubernetes.io/part-of: loantrack-system
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8000
+      targetPort: 8000
+      name: http
+  selector:
+    app.kubernetes.io/name: backend
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: backend-service
   namespace: loantrack
   labels:
