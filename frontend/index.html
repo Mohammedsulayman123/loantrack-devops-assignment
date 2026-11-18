@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LoanTrack — Loan Management System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --bg-main: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --success: #16a34a;
+      --success-bg: #dcfce7;
+      --warning: #ca8a04;
+      --warning-bg: #fef9c3;
+      --danger: #dc2626;
+      --danger-bg: #fee2e2;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.5;
+      padding: 2rem 1.5rem;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand-icon {
+      background: var(--primary);
+      color: white;
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+
+    .brand h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .brand p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    /* System Status Bar */
+    .system-status {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.8125rem;
+    }
+
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #94a3b8;
+    }
+
+    .dot.online { background: var(--success); box-shadow: 0 0 6px rgba(22, 163, 74, 0.4); }
+    .dot.offline { background: var(--danger); box-shadow: 0 0 6px rgba(220, 38, 38, 0.4); }
+
+    .pod-badge {
+      background: #f1f5f9;
+      color: #334155;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-family: monospace;
+      font-weight: 600;
+    }
+
+    /* Content Layout */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 1.75rem;
+    }
+
+    @media (max-width: 860px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      padding: 1.5rem;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .card-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+    }
+
+    /* Loans Table */
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+
+    th {
+      text-align: left;
+      padding: 0.75rem 1rem;
+      background: #f8fafc;
+      color: var(--text-muted);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 0.875rem 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    tr:hover {
+      background: #fdfdfd;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .badge-approved { background: var(--success-bg); color: var(--success); }
+    .badge-pending { background: var(--warning-bg); color: var(--warning); }
+    .badge-rejected { background: var(--danger-bg); color: var(--danger); }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 1.125rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      margin-bottom: 0.35rem;
+      color: #334155;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.625rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.875rem;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    button:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      width: auto;
+      padding: 0.4rem 0.75rem;
+      font-size: 0.8125rem;
+    }
+
+    .btn-secondary:hover {
+      background: #f1f5f9;
+    }
+
+    .alert {
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      font-size: 0.8125rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .alert-error {
+      background: var(--danger-bg);
+      color: var(--danger);
+      display: block;
+    }
+
+    .alert-success {
+      background: var(--success-bg);
+      color: var(--success);
+      display: block;
+    }
+
+    /* Backend selector */
+    .api-config {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px dashed var(--border);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="brand-icon">LT</div>
+        <div>
+          <h1>LoanTrack</h1>
+          <p>DevOps Three-Tier Reference Architecture</p>
+        </div>
+      </div>
+      <div class="system-status">
+        <div class="status-indicator">
+          <span class="dot" id="health-dot"></span>
+          <span>API: <strong id="health-status">Checking...</strong></span>
+        </div>
+        <div class="status-indicator">
+          <span class="dot" id="ready-dot"></span>
+          <span>DB: <strong id="ready-status">Checking...</strong></span>
+        </div>
+        <div>Pod: <span class="pod-badge" id="pod-name">—</span></div>
+      </div>
+    </header>
+
+    <div class="main-grid">
+      <!-- Loan Table Card -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Active Loan Portfolio</h2>
+          <button class="btn-secondary" onclick="loadLoans()">Refresh</button>
+        </div>
+        <div id="table-alert"></div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Borrower</th>
+                <th>Amount</th>
+                <th>City</th>
+                <th>Status</th>
+                <th>Created</th>
+              </tr>
+            </thead>
+            <tbody id="loans-body">
+              <tr>
+                <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                  Loading loan records...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Add Loan Form Card -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Originate Loan</h2>
+        </div>
+        <div id="form-alert"></div>
+        <form id="loan-form" onsubmit="handleCreateLoan(event)">
+          <div class="form-group">
+            <label for="borrower_name">Borrower Full Name</label>
+            <input type="text" id="borrower_name" required placeholder="e.g. Sarah Jenkins">
+          </div>
+          <div class="form-group">
+            <label for="loan_amount">Loan Amount (USD)</label>
+            <input type="number" id="loan_amount" step="0.01" min="1000" required placeholder="e.g. 250000.00">
+          </div>
+          <div class="form-group">
+            <label for="property_city">Property City</label>
+            <input type="text" id="property_city" required placeholder="e.g. Austin">
+          </div>
+          <div class="form-group">
+            <label for="status">Loan Status</label>
+            <select id="status">
+              <option value="PENDING" selected>PENDING</option>
+              <option value="APPROVED">APPROVED</option>
+              <option value="REJECTED">REJECTED</option>
+            </select>
+          </div>
+          <button type="submit" id="submit-btn">Submit Loan Application</button>
+        </form>
+
+        <div class="api-config">
+          <label for="api-base-url" style="font-size: 0.7rem;">Backend API Base URL</label>
+          <input type="text" id="api-base-url" value="" style="font-size: 0.75rem; padding: 0.35rem 0.5rem;" onchange="updateApiBaseUrl()">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Determine default API base URL
+    // Priority: Saved localStorage > Nginx reverse proxy /api > host:8000
+    function getInitialApiUrl() {
+      const saved = localStorage.getItem('loantrack_api_url');
+      if (saved) return saved;
+      // If served via Nginx with proxy setup
+      if (window.location.port === "3000" || window.location.port === "80" || window.location.port === "") {
+        // Test if /api is available, otherwise default to port 8000
+        return `${window.location.protocol}//${window.location.hostname}:8000`;
+      }
+      return "http://localhost:8000";
+    }
+
+    let API_BASE_URL = getInitialApiUrl();
+    document.getElementById('api-base-url').value = API_BASE_URL;
+
+    function updateApiBaseUrl() {
+      API_BASE_URL = document.getElementById('api-base-url').value.replace(/\/+$/, '');
+      localStorage.setItem('loantrack_api_url', API_BASE_URL);
+      checkSystemHealth();
+      loadLoans();
+    }
+
+    function formatCurrency(num) {
+      return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '—';
+      const d = new Date(dateStr);
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    async function checkSystemHealth() {
+      const healthDot = document.getElementById('health-dot');
+      const healthStatus = document.getElementById('health-status');
+      const readyDot = document.getElementById('ready-dot');
+      const readyStatus = document.getElementById('ready-status');
+      const podName = document.getElementById('pod-name');
+
+      try {
+        const hRes = await fetch(`${API_BASE_URL}/healthz`);
+        if (hRes.ok) {
+          const hData = await hRes.json();
+          healthDot.className = "dot online";
+          healthStatus.textContent = "Alive";
+          if (hData.pod_name) podName.textContent = hData.pod_name;
+        } else {
+          healthDot.className = "dot offline";
+          healthStatus.textContent = "Error";
+        }
+      } catch (err) {
+        healthDot.className = "dot offline";
+        healthStatus.textContent = "Offline";
+      }
+
+      try {
+        const rRes = await fetch(`${API_BASE_URL}/readyz`);
+        if (rRes.ok) {
+          readyDot.className = "dot online";
+          readyStatus.textContent = "Connected";
+        } else {
+          readyDot.className = "dot offline";
+          readyStatus.textContent = "Not Ready";
+        }
+      } catch (err) {
+        readyDot.className = "dot offline";
+        readyStatus.textContent = "Disconnected";
+      }
+    }
+
+    async function loadLoans() {
+      const tbody = document.getElementById('loans-body');
+      const alertBox = document.getElementById('table-alert');
+      alertBox.className = "alert";
+      alertBox.textContent = "";
+
+      try {
+        const res = await fetch(`${API_BASE_URL}/loans`);
+        if (!res.ok) {
+          throw new Error(`Server responded with ${res.status}: ${res.statusText}`);
+        }
+        const data = await res.json();
+        
+        if (data.pod_name) {
+          document.getElementById('pod-name').textContent = data.pod_name;
+        }
+
+        if (!data.loans || data.loans.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">No loans recorded yet. Add one using the form!</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = data.loans.map(loan => `
+          <tr>
+            <td><strong>#${loan.id}</strong></td>
+            <td>${escapeHtml(loan.borrower_name)}</td>
+            <td><strong>${formatCurrency(loan.loan_amount)}</strong></td>
+            <td>${escapeHtml(loan.property_city || '—')}</td>
+            <td><span class="badge badge-${loan.status.toLowerCase()}">${escapeHtml(loan.status)}</span></td>
+            <td>${formatDate(loan.created_at)}</td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--danger); padding: 2rem;">Failed to fetch loans. Backend or DB may be unreachable.</td></tr>`;
+        alertBox.className = "alert alert-error";
+        alertBox.textContent = `Error connecting to backend (${API_BASE_URL}): ${err.message}`;
+      }
+    }
+
+    async function handleCreateLoan(event) {
+      event.preventDefault();
+      const formAlert = document.getElementById('form-alert');
+      const submitBtn = document.getElementById('submit-btn');
+
+      const borrower_name = document.getElementById('borrower_name').value.trim();
+      const loan_amount = parseFloat(document.getElementById('loan_amount').value);
+      const property_city = document.getElementById('property_city').value.trim();
+      const status = document.getElementById('status').value;
+
+      formAlert.className = "alert";
+      formAlert.textContent = "";
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Submitting...";
+
+      try {
+        const res = await fetch(`${API_BASE_URL}/loans`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ borrower_name, loan_amount, property_city, status })
+        });
+
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.detail || `Error ${res.status}: ${res.statusText}`);
+        }
+
+        formAlert.className = "alert alert-success";
+        formAlert.textContent = "Loan application recorded successfully!";
+        document.getElementById('loan-form').reset();
+        await loadLoans();
+        await checkSystemHealth();
+      } catch (err) {
+        formAlert.className = "alert alert-error";
+        formAlert.textContent = `Submission failed: ${err.message}`;
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Submit Loan Application";
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Polling setup
+    checkSystemHealth();
+    loadLoans();
+    setInterval(checkSystemHealth, 5000);
+  </script>
+</body>
+</html>
